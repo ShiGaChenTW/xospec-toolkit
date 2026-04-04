@@ -1,4 +1,4 @@
-"""OpenSpec Repo Generator v9 — Jinja2 templates, CLI mode, git init, full workflow."""
+"""OpenSpec Toolkit — Jinja2 templates, CLI mode, git init, full workflow."""
 
 from pathlib import Path
 import argparse
@@ -198,7 +198,7 @@ def draw_size_warning(stdscr: curses.window) -> None:
     height, width = stdscr.getmaxyx()
     stdscr.erase()
     stdscr.bkgd(" ", curses.color_pair(PAIR_INACTIVE_LABEL))
-    safe_addstr(stdscr, 2, 2, "OpenSpec Repo Generator v9 / Fullscreen", curses.color_pair(PAIR_TITLE) | curses.A_BOLD)
+    safe_addstr(stdscr, 2, 2, "OpenSpec Toolkit / Fullscreen", curses.color_pair(PAIR_TITLE) | curses.A_BOLD)
     safe_hline(stdscr, 3, 2, ord("="), max(10, width - 4), curses.color_pair(PAIR_CURSOR_LINE))
     safe_addstr(stdscr, 6, 2, "畫面尺寸不足，請先放大 terminal 視窗。", curses.color_pair(PAIR_STATUS_WARN) | curses.A_BOLD)
     safe_addstr(stdscr, 8, 2, f"需要至少: {MIN_SCREEN_WIDTH} x {MIN_SCREEN_HEIGHT}", curses.color_pair(PAIR_ACTIVE_LABEL))
@@ -218,7 +218,7 @@ def draw_form(stdscr: curses.window, current_index: int, values: dict[str, str],
     content_width = max(20, width - (content_x * 2))
     input_inner_width = max(18, content_width - 4)
 
-    title = "OpenSpec Repo Generator v9 / Fullscreen"
+    title = "OpenSpec Toolkit / Fullscreen"
     subtitle = "Enter 逐題跳到下一題，方向鍵可移動，F2 送出，Esc 離開"
     safe_addstr(stdscr, 1, 2, title[: width - 4], curses.color_pair(PAIR_TITLE) | curses.A_BOLD)
     safe_addstr(stdscr, 2, 2, subtitle[: width - 4], curses.color_pair(PAIR_SUBTITLE) | curses.A_BOLD)
@@ -572,7 +572,7 @@ def generate_repo(answers: dict[str, str], brownfield: bool = False) -> Path:
 
 def parse_cli_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="OpenSpec Repo Generator v9 — 互動式或 CLI 模式建立 repo 骨架",
+        description="OpenSpec Toolkit — 互動式或 CLI 模式建立 repo 骨架",
     )
     parser.add_argument("--project-name", help="專案名稱")
     parser.add_argument("--target-dir", help="輸出路徑")

@@ -1,23 +1,23 @@
-# OpenSpec v9 測試計畫
+# OpenSpec Toolkit 測試計畫
 
 ## 測試對象總覽
 
 | 元件 | 類型 | 檔案位置 | 測試重點 |
 |------|------|----------|----------|
-| `create_repo_v9.py` | Python CLI | 專案根目錄 | Greenfield / Brownfield / add-change 三種模式 |
+| `create_repo.py` | Python CLI | 專案根目錄 | Greenfield / Brownfield / add-change 三種模式 |
 | `openspec-preflight.js` | Node.js hook | `~/.claude/hooks/` | PreToolUse 攔截邏輯 |
 | Jinja2 模板 (15 個) | Template | `templates/` | 渲染結果正確性 |
 
 ---
 
-## A. create_repo_v9.py 測試
+## A. create_repo.py 測試
 
 ### A1. Greenfield 模式（完整生成）
 
 #### A1-1: 基本生成 — 預設值
 
 ```
-指令：python3 create_repo_v9.py --non-interactive --project-name "test-project" --target-dir $TMPDIR/test-greenfield
+指令：python3 create_repo.py --non-interactive --project-name "test-project" --target-dir $TMPDIR/test-greenfield
 預期：
   ✅ 生成 README.md
   ✅ 生成 .gitignore
@@ -45,7 +45,7 @@
 #### A1-2: 自訂參數
 
 ```
-指令：python3 create_repo_v9.py --non-interactive \
+指令：python3 create_repo.py --non-interactive \
   --project-name "billing-service" \
   --capabilities "payment,invoice,notification" \
   --first-change-name "add-payment-gateway" \
@@ -67,7 +67,7 @@
 #### A1-3: 停用 Superpowers
 
 ```
-指令：python3 create_repo_v9.py --non-interactive \
+指令：python3 create_repo.py --non-interactive \
   --project-name "minimal" \
   --enable-superpowers no \
   --target-dir $TMPDIR/test-minimal
@@ -80,7 +80,7 @@
 #### A1-4: 停用 git init
 
 ```
-指令：python3 create_repo_v9.py --non-interactive \
+指令：python3 create_repo.py --non-interactive \
   --project-name "no-git" \
   --git-init no \
   --target-dir $TMPDIR/test-no-git
@@ -102,7 +102,7 @@
 #### A1-6: CLI 預設值警告
 
 ```
-指令：python3 create_repo_v9.py --non-interactive --project-name "warn-test" --target-dir $TMPDIR/test-warn
+指令：python3 create_repo.py --non-interactive --project-name "warn-test" --target-dir $TMPDIR/test-warn
 預期：
   ✅ stdout 含 "⚠ 以下必填參數未提供，使用預設值"
   ✅ 列出 --capabilities, --first-change-name, --first-change-capability, --user-problem, --target-user
@@ -111,7 +111,7 @@
 #### A1-7: 缺少 project-name 應報錯
 
 ```
-指令：python3 create_repo_v9.py --non-interactive --target-dir $TMPDIR/fail
+指令：python3 create_repo.py --non-interactive --target-dir $TMPDIR/fail
 預期：
   ✅ exit code != 0
   ✅ stderr/stdout 含 "必須提供 --project-name"
@@ -129,7 +129,7 @@
   echo "# Existing" > $TMPDIR/test-brown/README.md
   git -C $TMPDIR/test-brown init && git -C $TMPDIR/test-brown add . && git -C $TMPDIR/test-brown commit -m "init"
 
-指令：python3 create_repo_v9.py --non-interactive --brownfield \
+指令：python3 create_repo.py --non-interactive --brownfield \
   --project-name "test-brown" \
   --capabilities "auth,billing" \
   --target-dir $TMPDIR/test-brown
@@ -161,7 +161,7 @@
 ```
 前置：先用 Greenfield 模式生成 $TMPDIR/test-add-change
 
-指令：python3 create_repo_v9.py --add-change "fix-auth-session-leak" \
+指令：python3 create_repo.py --add-change "fix-auth-session-leak" \
   --first-change-capability auth \
   --target-dir $TMPDIR/test-add-change
 預期：
@@ -174,7 +174,7 @@
 #### A3-2: 自動推斷 capability
 
 ```
-指令：python3 create_repo_v9.py --add-change "add-billing-pdf-export" \
+指令：python3 create_repo.py --add-change "add-billing-pdf-export" \
   --target-dir $TMPDIR/test-add-change
 預期（不提供 --first-change-capability）：
   ✅ 從 change name 推斷 capability 為 "billing"
@@ -194,7 +194,7 @@
 #### A3-4: 無 openspec/ 目錄應報錯
 
 ```
-指令：python3 create_repo_v9.py --add-change "some-change" --target-dir $TMPDIR/empty-dir
+指令：python3 create_repo.py --add-change "some-change" --target-dir $TMPDIR/empty-dir
 預期：
   ✅ exit code != 0
   ✅ stdout 含 "不存在" 和 "--brownfield"
@@ -203,7 +203,7 @@
 #### A3-5: 新 capability 自動建立 spec
 
 ```
-指令：python3 create_repo_v9.py --add-change "add-analytics-dashboard" \
+指令：python3 create_repo.py --add-change "add-analytics-dashboard" \
   --first-change-capability analytics \
   --target-dir $TMPDIR/test-add-change
 預期：
@@ -433,7 +433,7 @@ result = env.get_template("gsd_roadmap.md.j2").render(**ctx)
 
 ```
 步驟 1: Greenfield 生成
-  python3 create_repo_v9.py --non-interactive \
+  python3 create_repo.py --non-interactive \
     --project-name "e2e-test" \
     --capabilities "auth,billing" \
     --target-dir $TMPDIR/e2e-test
@@ -452,7 +452,7 @@ result = env.get_template("gsd_roadmap.md.j2").render(**ctx)
   → exit code = 0, stderr 含 "⚠️"
 
 步驟 5: 新增 change
-  python3 create_repo_v9.py --add-change "add-billing-invoice" \
+  python3 create_repo.py --add-change "add-billing-invoice" \
     --first-change-capability billing \
     --target-dir $TMPDIR/e2e-test
 
@@ -471,7 +471,7 @@ result = env.get_template("gsd_roadmap.md.j2").render(**ctx)
   git -C $TMPDIR/e2e-brown add . && git -C $TMPDIR/e2e-brown commit -m "init"
 
 步驟 2: Brownfield 導入
-  python3 create_repo_v9.py --non-interactive --brownfield \
+  python3 create_repo.py --non-interactive --brownfield \
     --project-name "e2e-brown" \
     --capabilities "payments,users" \
     --target-dir $TMPDIR/e2e-brown
@@ -489,7 +489,7 @@ result = env.get_template("gsd_roadmap.md.j2").render(**ctx)
   → exit code = 0（有 active change）
 
 步驟 5: add-change
-  python3 create_repo_v9.py --add-change "fix-users-session-bug" \
+  python3 create_repo.py --add-change "fix-users-session-bug" \
     --target-dir $TMPDIR/e2e-brown
   ✅ openspec/changes/fix-users-session-bug/ 存在
   ✅ capability 自動推斷為 "users"
@@ -530,7 +530,7 @@ tests/
 
 ```bash
 # 全部跑
-cd v9_openspec_generator
+cd openspec-toolkit
 bash tests/test_generator.sh && bash tests/test_preflight.sh && python3 tests/test_templates.py && bash tests/test_e2e.sh
 
 # 單獨跑某系列
@@ -556,7 +556,7 @@ bash tests/test_e2e.sh          # D 系列
 - teardown（清理臨時目錄）
 - 輸出 PASS/FAIL 和總計
 
-主程式路徑：/Users/scottchen/Documents/Coding-Project/v9_openspec_generator/create_repo_v9.py
+主程式路徑：/Users/scottchen/Documents/Coding-Project/openspec-toolkit/create_repo.py
 Hook 路徑：/Users/scottchen/.claude/hooks/openspec-preflight.js
-模板路徑：/Users/scottchen/Documents/Coding-Project/v9_openspec_generator/templates/
+模板路徑：/Users/scottchen/Documents/Coding-Project/openspec-toolkit/templates/
 ```

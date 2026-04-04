@@ -1,6 +1,6 @@
 # Changelog
 
-## v9.2.0 — 開發日誌機制（2026-04-03）
+## 2.0.0 — 開發日誌機制（2026-04-03）
 
 ### 背景
 
@@ -24,7 +24,7 @@
 
 #### `docs/CHANGELOG.md`
 
-新增本區塊（v9.2.0），記錄開發日誌機制的架構變更。
+新增本區塊（2.0.0），記錄開發日誌機制的架構變更。
 
 ### 日誌結構說明
 
@@ -42,7 +42,7 @@
 
 ### 生成結果變化
 
-**Before（v9.1）：**
+**Before（1.1）：**
 ```
 <project>/
 ├── README.md
@@ -53,7 +53,7 @@
 └── .planning/
 ```
 
-**After（v9.2）：**
+**After（1.0.2）：**
 ```
 <project>/
 ├── CLAUDE.md                       <-- 新增：專案指示與日誌規範
@@ -70,17 +70,17 @@
 
 ### 向後相容性
 
-- 已生成的 v9.1 repo 不受影響
+- 已生成的 1.1 repo 不受影響
 - `CHANGELOG/` 為獨立目錄，不干擾 `openspec/` 或 `.planning/`
 - `CLAUDE.md` 僅供 Claude Code 讀取，不影響其他工具
 
 ---
 
-## v9.1.0 — GSD 整合（2026-04-02）
+## 1.1.0 — GSD 整合（2026-04-02）
 
 ### 背景
 
-v9 原本採用 OpenSpec + Superpowers 的五層架構。本次更新將 GSD（Get Stuff Done）執行引擎整合進 Layer 5，使生成的 repo 同時具備「規格驅動」（OpenSpec）、「工程紀律」（Superpowers）和「階段式執行編排」（GSD）三合一能力。
+1.0 原本採用 OpenSpec + Superpowers 的五層架構。本次更新將 GSD（Get Stuff Done）執行引擎整合進 Layer 5，使生成的 repo 同時具備「規格驅動」（OpenSpec）、「工程紀律」（Superpowers）和「階段式執行編排」（GSD）三合一能力。
 
 ### 核心設計決策
 
@@ -101,7 +101,7 @@ v9 原本採用 OpenSpec + Superpowers 的五層架構。本次更新將 GSD（G
 
 ### 修改檔案
 
-#### `create_repo_v9.py`
+#### `create_repo_1.0.py`
 
 **變更位置：** `generate_repo()` 函式中的 Superpowers integration 區塊（原第 422–436 行）
 
@@ -157,7 +157,7 @@ if enable_superpowers:
 
 ### 生成結果變化
 
-**Before（v9）：**
+**Before（1.0）：**
 ```
 <project>/
 ├── README.md
@@ -172,7 +172,7 @@ if enable_superpowers:
     └── changes/
 ```
 
-**After（v9.1）：**
+**After（1.1）：**
 ```
 <project>/
 ├── README.md                       ← 含五層架構圖
@@ -193,7 +193,7 @@ if enable_superpowers:
 
 ### 未變更的檔案
 
-以下檔案在本次更新中**未修改**，維持 v9 原樣：
+以下檔案在本次更新中**未修改**，維持 1.0 原樣：
 
 - `templates/spec.md.j2` — Living spec 模板
 - `templates/spec_delta.md.j2` — Spec delta 模板
@@ -211,6 +211,6 @@ if enable_superpowers:
 
 ### 向後相容性
 
-- 已生成的 v9 repo 不受影響
-- `--enable-superpowers no` 時行為與 v9 完全相同（不生成 `docs/superpowers.md` 和 `.planning/`）
+- 已生成的 1.0 repo 不受影響
+- `--enable-superpowers no` 時行為與 1.0 完全相同（不生成 `docs/superpowers.md` 和 `.planning/`）
 - 新增的 `.planning/` 目錄不會干擾 OpenSpec 的 `openspec/` 目錄

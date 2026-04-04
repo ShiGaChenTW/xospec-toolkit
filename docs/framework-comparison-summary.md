@@ -78,7 +78,7 @@
 
 ## 5. 建議的五層架構
 
-對話中最終確認的架構（後來成為 v9 generator 的基礎）：
+對話中最終確認的架構（後來成為 OpenSpec Toolkit 的基礎）：
 
 ```
 Layer 5  Superpowers       → 工程紀律（plan / TDD / review）
@@ -145,4 +145,4 @@ Do not rewrite code yet; review first.
 
 ---
 
-> 本總結濃縮自約 1700 行 Perplexity 對話原文。原文包含重複段落（每則回覆被複製兩次），以及範例檔案模板（已由 v9 generator 的 Jinja2 模板取代）。如需查閱原始對話細節，參見原始檔案。
+> 本總結濃縮自約 1700 行 Perplexity 對話原文。原文包含重複段落（每則回覆被複製兩次），以及範例檔案模板（已由 OpenSpec Toolkit 的 Jinja2 模板取代）。如需查閱原始對話細節，參見原始檔案。
