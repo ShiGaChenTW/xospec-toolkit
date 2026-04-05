@@ -8,6 +8,7 @@
 set -eo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+VENV_DIR="$SCRIPT_DIR/.venv"
 CLAUDE_DIR="$HOME/.claude"
 SKILLS_DIR="$CLAUDE_DIR/skills"
 HOOKS_DIR="$CLAUDE_DIR/hooks"
@@ -112,8 +113,25 @@ check_env() {
 
 # ── Step 2: 安裝 Python 依賴 ─────────────────────────────────────────────────
 
+activate_venv() {
+  if [ -f "$VENV_DIR/bin/activate" ]; then
+    source "$VENV_DIR/bin/activate"
+  fi
+}
+
 install_deps() {
   header "Step 2/4: Python 依賴"
+
+  # 建立 venv（若不存在）
+  if [ ! -d "$VENV_DIR" ]; then
+    info "建立虛擬環境 .venv/"
+    python3 -m venv "$VENV_DIR"
+    ok "虛擬環境已建立"
+  else
+    ok "虛擬環境已存在"
+  fi
+
+  activate_venv
 
   local missing=()
   python3 -c "import jinja2" 2>/dev/null || missing+=(jinja2)
@@ -264,6 +282,7 @@ uninstall() {
 # ── 啟動 Generator ────────────────────────────────────────────────────────────
 
 run_generator() {
+  activate_venv
   printf "\n${BOLD}${GREEN}🚀 啟動 OpenSpec Generator${NC}\n\n"
   exec python3 "$SCRIPT_DIR/create_repo.py" "$@"
 }
