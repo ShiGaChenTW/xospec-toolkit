@@ -684,35 +684,149 @@ def main() -> None:
     post_generate_prompt(repo_root)
 
 
+def check_skills_installed() -> dict[str, bool]:
+    """Check which OpenSpec skills are installed in ~/.claude/skills/."""
+    skills_dir = Path.home() / ".claude" / "skills"
+    skills = {
+        "openspec-generator": False,
+        "openspec-preflight": False,
+        "openspec-brownfield-onboard": False,
+    }
+    for name in skills:
+        skill_path = skills_dir / name
+        if skill_path.exists() or skill_path.is_symlink():
+            skills[name] = True
+    return skills
+
+
+def find_toolkit_skills_dir() -> Path | None:
+    """Find the skills/ directory relative to this script."""
+    skills_dir = Path(__file__).parent / "skills"
+    if skills_dir.is_dir():
+        return skills_dir
+    return None
+
+
+def install_skills_interactive() -> None:
+    """Guide user through skill installation."""
+    claude_dir = Path.home() / ".claude"
+    if not claude_dir.is_dir():
+        print("  找不到 ~/.claude/ 目錄，請先安裝 Claude Code")
+        return
+
+    skills_src = find_toolkit_skills_dir()
+    if not skills_src:
+        print("  找不到 skills/ 目錄")
+        return
+
+    skills_dir = claude_dir / "skills"
+    skills_dir.mkdir(exist_ok=True)
+
+    skill_names = ["openspec-generator", "openspec-preflight", "openspec-brownfield-onboard"]
+    installed_count = 0
+
+    for name in skill_names:
+        src = skills_src / name
+        dst = skills_dir / name
+        if dst.exists() or dst.is_symlink():
+            print(f"  ✔ {name}（已安裝）")
+            installed_count += 1
+        elif src.is_dir():
+            dst.symlink_to(src)
+            print(f"  ✔ {name} → 已建立 symlink")
+            installed_count += 1
+        else:
+            print(f"  ✖ {name} — 來源不存在")
+
+    # Preflight hook
+    hook_src = skills_src / "openspec-preflight" / "openspec-preflight.js"
+    hooks_dir = claude_dir / "hooks"
+    if hook_src.is_file():
+        hooks_dir.mkdir(exist_ok=True)
+        hook_dst = hooks_dir / "openspec-preflight.js"
+        if not hook_dst.exists():
+            import shutil
+            shutil.copy2(str(hook_src), str(hook_dst))
+            print(f"  ✔ preflight hook → 已複製到 ~/.claude/hooks/")
+        else:
+            print(f"  ✔ preflight hook（已安裝）")
+        # Check settings.json
+        settings_file = claude_dir / "settings.json"
+        if settings_file.is_file() and "openspec-preflight" in settings_file.read_text():
+            print(f"  ✔ settings.json 已設定 hook")
+        else:
+            print(f"  ⚠ 請手動將 preflight hook 加入 ~/.claude/settings.json")
+            print(f"    參考：skills/openspec-preflight/SKILL.md")
+
+    print(f"\n  已安裝 {installed_count}/{len(skill_names)} 個 Skills")
+
+
 def post_generate_prompt(repo_root: Path) -> None:
-    """Ask user what to do next: open in IDE or stay in terminal."""
+    """Ask user what to do next: install skills, open in IDE, or stay in terminal."""
+
+    # Check skill status
+    skills_status = check_skills_installed()
+    all_installed = all(skills_status.values())
+
     print("\n" + "─" * 50)
     print("下一步？\n")
-    print("  1) 用 VS Code 開啟專案")
-    print("  2) 用 Cursor 開啟專案")
-    print("  3) 進入專案目錄（Terminal）")
-    print("  4) 結束")
+
+    if not all_installed:
+        missing = [name for name, ok in skills_status.items() if not ok]
+        print(f"  ⚠ 偵測到 {len(missing)} 個 Claude Code Skill 尚未安裝：")
+        for name in missing:
+            print(f"    • {name}")
+        print()
+
+    print("  1) 安裝 Claude Code Skills（AI 開發輔助）")
+    print("  2) 用 VS Code 開啟專案")
+    print("  3) 用 Cursor 開啟專案")
+    print("  4) 進入專案目錄（Terminal）")
+    print("  5) 結束")
     print()
 
+    if not all_installed:
+        default = "1"
+        prompt_text = "請選擇 [1/2/3/4/5]（預設 1）："
+    else:
+        default = "4"
+        prompt_text = "請選擇 [1/2/3/4/5]（預設 4）："
+
     try:
-        choice = input("請選擇 [1/2/3/4]（預設 3）：").strip() or "3"
+        choice = input(prompt_text).strip() or default
     except (EOFError, KeyboardInterrupt):
         print()
         return
 
     if choice == "1":
+        print("\n安裝 Claude Code Skills...\n")
+        install_skills_interactive()
+        print("\n" + "─" * 50)
+        print("\n接下來？\n")
+        print("  2) 用 VS Code 開啟專案")
+        print("  3) 用 Cursor 開啟專案")
+        print("  4) 進入專案目錄（Terminal）")
+        print("  5) 結束")
+        print()
+        try:
+            choice = input("請選擇 [2/3/4/5]（預設 4）：").strip() or "4"
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return
+
+    if choice == "2":
         print(f"\n開啟 VS Code → {repo_root}")
         subprocess.run(["code", str(repo_root)])
-    elif choice == "2":
+    elif choice == "3":
         print(f"\n開啟 Cursor → {repo_root}")
         subprocess.run(["cursor", str(repo_root)])
-    elif choice == "3":
+    elif choice == "4":
         print(f"\n請執行以下指令進入專案目錄：")
         print(f"  cd {repo_root}")
-    elif choice == "4":
+    elif choice == "5":
         print("\n再見！")
     else:
-        print(f"\n無法辨識的選項。請執行以下指令進入專案目錄：")
+        print(f"\n請執行以下指令進入專案目錄：")
         print(f"  cd {repo_root}")
 
 
