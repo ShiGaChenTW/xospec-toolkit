@@ -681,8 +681,7 @@ def main() -> None:
     mode = "Brownfield 導入" if args.brownfield else "Repo created"
     print(f"\n全部完成！{mode} at: {repo_root}")
 
-    if sys.stdin.isatty():
-        post_generate_prompt(repo_root)
+    post_generate_prompt(repo_root)
 
 
 def post_generate_prompt(repo_root: Path) -> None:
