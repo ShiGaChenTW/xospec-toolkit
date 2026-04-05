@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // =============================================================================
-// openspec-preflight.js — PreToolUse Hook
+// xospec-preflight.js — PreToolUse Hook
 //
 // 攔截 Write/Edit 操作，確保 Agent 在修改程式碼前：
-//   1. 專案有 openspec/ 結構（若無則跳過，不干擾非 OpenSpec 專案）
-//   2. 有 active change（.planning/STATE.md 或 openspec/changes/ 有進行中的 change）
+//   1. 專案有 xospec/ 結構（若無則跳過，不干擾非 x.ospec 專案）
+//   2. 有 active change（.planning/STATE.md 或 xospec/changes/ 有進行中的 change）
 //   3. 該 change 的 tasks.md 有未完成的任務
 //   4. 不在 spec 範圍外亂改檔案（scope drift 警告）
 //
@@ -19,9 +19,9 @@ const path = require('path');
 
 // 不檢查的路徑 patterns（這些目錄本身就是 spec/docs，不需要 preflight）
 const SKIP_PATTERNS = [
-  /openspec\//,
+  /xospec\//,
   /\.planning\//,
-  /\.openspec-map\.md/,
+  /\.xospec-map\.md/,
   /AGENTS\.md/,
   /CLAUDE\.md/,
   /README\.md/,
@@ -55,7 +55,7 @@ const SKIP_PATTERNS = [
 function findProjectRoot(startPath) {
   let dir = startPath;
   for (let i = 0; i < 10; i++) {
-    if (fs.existsSync(path.join(dir, 'openspec'))) return dir;
+    if (fs.existsSync(path.join(dir, 'xospec'))) return dir;
     if (fs.existsSync(path.join(dir, '.git'))) return dir;
     const parent = path.dirname(dir);
     if (parent === dir) break;
@@ -64,8 +64,8 @@ function findProjectRoot(startPath) {
   return null;
 }
 
-function isOpenSpecProject(root) {
-  return fs.existsSync(path.join(root, 'openspec'));
+function isx.ospecProject(root) {
+  return fs.existsSync(path.join(root, 'xospec'));
 }
 
 function getActiveChange(root) {
@@ -83,8 +83,8 @@ function getActiveChange(root) {
     }
   }
 
-  // 方法 2: 掃描 openspec/changes/ 找有未完成 tasks 的 change
-  const changesDir = path.join(root, 'openspec', 'changes');
+  // 方法 2: 掃描 xospec/changes/ 找有未完成 tasks 的 change
+  const changesDir = path.join(root, 'xospec', 'changes');
   if (!fs.existsSync(changesDir)) return null;
 
   const changes = fs.readdirSync(changesDir, { withFileTypes: true })
@@ -104,7 +104,7 @@ function getActiveChange(root) {
 }
 
 function getTaskStatus(root, changeId) {
-  const tasksPath = path.join(root, 'openspec', 'changes', changeId, 'tasks.md');
+  const tasksPath = path.join(root, 'xospec', 'changes', changeId, 'tasks.md');
   if (!fs.existsSync(tasksPath)) return { total: 0, done: 0, remaining: 0 };
 
   const content = fs.readFileSync(tasksPath, 'utf8');
@@ -158,8 +158,8 @@ process.stdin.on('end', () => {
     process.exit(0); // 不在任何專案中，放行
   }
 
-  // 非 OpenSpec 專案，放行
-  if (!isOpenSpecProject(projectRoot)) {
+  // 非 x.ospec 專案，放行
+  if (!isx.ospecProject(projectRoot)) {
     process.exit(0);
   }
 
@@ -167,10 +167,10 @@ process.stdin.on('end', () => {
   const activeChange = getActiveChange(projectRoot);
   if (!activeChange) {
     process.stderr.write(
-      `\n⛔ OpenSpec Preflight 攔截\n` +
+      `\n⛔ x.ospec Preflight 攔截\n` +
       `   修改檔案: ${path.relative(projectRoot, filePath)}\n` +
       `   問題: 沒有進行中的 Change Package\n` +
-      `   修正: 先在 openspec/changes/ 建立新的 Change Package\n` +
+      `   修正: 先在 xospec/changes/ 建立新的 Change Package\n` +
       `         （proposal.md → design.md → tasks.md），再開始寫程式碼\n`
     );
     process.exit(2);
@@ -181,10 +181,10 @@ process.stdin.on('end', () => {
 
   if (taskStatus.total === 0) {
     process.stderr.write(
-      `\n⚠️  OpenSpec Preflight 警告\n` +
+      `\n⚠️  x.ospec Preflight 警告\n` +
       `   Active change: ${activeChange}\n` +
       `   問題: tasks.md 是空的或不存在\n` +
-      `   建議: 先在 openspec/changes/${activeChange}/tasks.md 列出任務清單\n`
+      `   建議: 先在 xospec/changes/${activeChange}/tasks.md 列出任務清單\n`
     );
     // 警告但不阻擋（可能正在初始設定）
     process.exit(0);
@@ -192,7 +192,7 @@ process.stdin.on('end', () => {
 
   if (taskStatus.remaining === 0) {
     process.stderr.write(
-      `\n⚠️  OpenSpec Preflight 警告\n` +
+      `\n⚠️  x.ospec Preflight 警告\n` +
       `   Active change: ${activeChange}\n` +
       `   問題: tasks.md 的所有任務已完成 (${taskStatus.done}/${taskStatus.total})\n` +
       `   你正在修改計畫外的程式碼。如果這是新需求，請建立新的 Change Package。\n`
@@ -203,7 +203,7 @@ process.stdin.on('end', () => {
 
   // ── 通過：顯示進度 ──
   process.stderr.write(
-    `✅ OpenSpec: ${activeChange} [${taskStatus.done}/${taskStatus.total}]\n`
+    `✅ x.ospec: ${activeChange} [${taskStatus.done}/${taskStatus.total}]\n`
   );
   process.exit(0);
 });

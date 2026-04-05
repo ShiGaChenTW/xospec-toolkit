@@ -49,7 +49,7 @@
 ├── AGENTS.md
 ├── .gitignore
 ├── docs/
-├── openspec/
+├── xospec/
 └── .planning/
 ```
 
@@ -64,14 +64,14 @@
 │   ├── CHANGELOG-LIST.md           <-- 日誌索引
 │   └── YYYY-MM-DD_HHMM.md         <-- 各 session 日誌
 ├── docs/
-├── openspec/
+├── xospec/
 └── .planning/
 ```
 
 ### 向後相容性
 
 - 已生成的 1.1 repo 不受影響
-- `CHANGELOG/` 為獨立目錄，不干擾 `openspec/` 或 `.planning/`
+- `CHANGELOG/` 為獨立目錄，不干擾 `xospec/` 或 `.planning/`
 - `CLAUDE.md` 僅供 Claude Code 讀取，不影響其他工具
 
 ---
@@ -80,20 +80,20 @@
 
 ### 背景
 
-1.0 原本採用 OpenSpec + Superpowers 的五層架構。本次更新將 GSD（Get Stuff Done）執行引擎整合進 Layer 5，使生成的 repo 同時具備「規格驅動」（OpenSpec）、「工程紀律」（Superpowers）和「階段式執行編排」（GSD）三合一能力。
+1.0 原本採用 x.ospec + Superpowers 的五層架構。本次更新將 GSD（Get Stuff Done）執行引擎整合進 Layer 5，使生成的 repo 同時具備「規格驅動」（x.ospec）、「工程紀律」（Superpowers）和「階段式執行編排」（GSD）三合一能力。
 
 ### 核心設計決策
 
-**1 個 GSD Phase = 1 個 OpenSpec Change**
+**1 個 GSD Phase = 1 個 x.ospec Change**
 
-這是本次整合最關鍵的映射關係。GSD 負責「按什麼順序做」，OpenSpec 負責「做的內容是什麼」。兩套系統共用同一個變更粒度，不會產生重複追蹤。
+這是本次整合最關鍵的映射關係。GSD 負責「按什麼順序做」，x.ospec 負責「做的內容是什麼」。兩套系統共用同一個變更粒度，不會產生重複追蹤。
 
 ### 新增檔案
 
 | 檔案 | 用途 |
 |------|------|
 | `templates/gsd_project.md.j2` | GSD PROJECT.md 模板 — 專案願景、使用者、capabilities、限制條件 |
-| `templates/gsd_roadmap.md.j2` | GSD ROADMAP.md 模板 — milestone/phase 結構，phase 編號對應 OpenSpec change |
+| `templates/gsd_roadmap.md.j2` | GSD ROADMAP.md 模板 — milestone/phase 結構，phase 編號對應 x.ospec change |
 | `templates/gsd_state.md.j2` | GSD STATE.md 模板 — 當前 phase 進度、決策記錄、blocker 追蹤 |
 | `templates/superpowers.md.j2` | Superpowers 整合指南模板 — 取代原本硬編碼在 Python 中的字串，新增 GSD command 對照表 |
 | `docs/architecture-guide.md` | 三合一架構完整說明書 — 三框架說明、整合原因、五層架構、逐檔案原理解說、開發循環、術語表 |
@@ -141,10 +141,10 @@ if enable_superpowers:
 
 **新增內容：**
 - 「Read first」清單加入 `.planning/STATE.md` 和 `.planning/ROADMAP.md`
-- 新增「Starting a new change (GSD + OpenSpec)」workflow 章節，定義 8 步流程
+- 新增「Starting a new change (GSD + x.ospec)」workflow 章節，定義 8 步流程
 - Rules 加入「Update `.planning/STATE.md` when phase status changes」
 
-**設計考量：** AGENTS.md 是 AI Agent 進入 repo 後的第一份指示，必須整合三個框架的行為規範，而非只反映 OpenSpec。
+**設計考量：** AGENTS.md 是 AI Agent 進入 repo 後的第一份指示，必須整合三個框架的行為規範，而非只反映 x.ospec。
 
 #### `templates/readme.md.j2`
 
@@ -166,7 +166,7 @@ if enable_superpowers:
 ├── docs/
 │   ├── engineering-principles.md
 │   └── superpowers.md              ← 純 Superpowers
-└── openspec/
+└── xospec/
     ├── README.md
     ├── specs/
     └── changes/
@@ -181,7 +181,7 @@ if enable_superpowers:
 ├── docs/
 │   ├── engineering-principles.md
 │   └── superpowers.md              ← 含 GSD command 對照
-├── openspec/
+├── xospec/
 │   ├── README.md
 │   ├── specs/
 │   └── changes/
@@ -200,10 +200,10 @@ if enable_superpowers:
 - `templates/proposal.md.j2` — 變更提案模板
 - `templates/design.md.j2` — 技術設計模板
 - `templates/tasks.md.j2` — 任務清單模板
-- `templates/openspec_readme.md.j2` — OpenSpec 目錄說明
+- `templates/xospec_readme.md.j2` — x.ospec 目錄說明
 - `templates/gitignore.j2` — .gitignore 模板
 - `templates/engineering_principles.md.j2` — 工程原則模板
-- `.openspec-generator.yml.example` — Config 範例檔
+- `.xospec-generator.yml.example` — Config 範例檔
 
 ### CLI 介面變化
 
@@ -213,4 +213,4 @@ if enable_superpowers:
 
 - 已生成的 1.0 repo 不受影響
 - `--enable-superpowers no` 時行為與 1.0 完全相同（不生成 `docs/superpowers.md` 和 `.planning/`）
-- 新增的 `.planning/` 目錄不會干擾 OpenSpec 的 `openspec/` 目錄
+- 新增的 `.planning/` 目錄不會干擾 x.ospec 的 `xospec/` 目錄

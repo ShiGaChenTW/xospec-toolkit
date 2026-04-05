@@ -1,29 +1,29 @@
 ---
-name: openspec-brownfield-onboard
-description: 將 OpenSpec Toolkit 框架導入既有專案 — 互動式引導掃描現有結構、推斷 Capabilities、建立最小規格骨架，不動既有程式碼
+name: xospec-brownfield-onboard
+description: 將 x.ospec Toolkit 框架導入既有專案 — 互動式引導掃描現有結構、推斷 Capabilities、建立最小規格骨架，不動既有程式碼
 version: 1.0.0
 triggers:
   - brownfield
-  - 導入 openspec
-  - 既有專案加入 openspec
-  - 套用 openspec
-  - retrofit openspec
-  - add openspec to existing project
+  - 導入 xospec
+  - 既有專案加入 xospec
+  - 套用 xospec
+  - retrofit xospec
+  - add xospec to existing project
 ---
 
-# OpenSpec Brownfield Onboard
+# x.ospec Brownfield Onboard
 
 ## 核心原則
 
 > **最小侵入，受影響範圍優先。**
 > 不改動既有程式碼、不改動既有目錄結構、不覆蓋任何現有檔案。
-> 只新增 OpenSpec 框架所需的 Markdown 檔案。
+> 只新增 x.ospec 框架所需的 Markdown 檔案。
 
 ## 何時使用
 
-- 專案已存在且有程式碼，想導入 OpenSpec spec-driven 開發流程
+- 專案已存在且有程式碼，想導入 x.ospec spec-driven 開發流程
 - 從其他開發方式（Jira-driven, ad-hoc）遷移到 spec-driven
-- 專案已有 git 但沒有 `openspec/` 目錄
+- 專案已有 git 但沒有 `xospec/` 目錄
 
 ## 導入流程（5 步驟）
 
@@ -40,7 +40,7 @@ Agent 收到導入請求後，**嚴格按以下順序執行**：
 1. 讀取 README.md（若有）了解專案目的
 2. 執行目錄掃描：ls -la && find . -type f -name "*.md" | head -20
 3. 檢查技術棧：package.json / pyproject.toml / go.mod / Cargo.toml / build.gradle
-4. 檢查是否已有 openspec/（若有，跳到 Step 4 直接新增 Change）
+4. 檢查是否已有 xospec/（若有，跳到 Step 4 直接新增 Change）
 5. 檢查是否已有 AGENTS.md / .planning/（部分導入的情況）
 ```
 
@@ -51,7 +51,7 @@ Agent 收到導入請求後，**嚴格按以下順序執行**：
 - 技術棧：<stack>
 - 主要目錄：<top-level dirs>
 - 現有文件：<existing docs>
-- OpenSpec 狀態：❌ 未導入 / ⚠️ 部分導入 / ✅ 已導入
+- x.ospec 狀態：❌ 未導入 / ⚠️ 部分導入 / ✅ 已導入
 ```
 
 ---
@@ -86,16 +86,16 @@ Agent 收到導入請求後，**嚴格按以下順序執行**：
 
 ### Step 3: 建立最小骨架
 
-**目標：** 只新增 OpenSpec 框架檔案，不動既有內容
+**目標：** 只新增 x.ospec 框架檔案，不動既有內容
 
 #### 3a. 必建檔案（Layer 1-2）
 
 ```
 <project>/                          ← 不動
-├── .openspec-map.md               ← 新增：空間索引
+├── .xospec-map.md               ← 新增：空間索引
 ├── AGENTS.md                      ← 新增：Agent 行為規範（若不存在）
-├── openspec/
-│   ├── README.md                  ← 新增：openspec 目錄說明
+├── xospec/
+│   ├── README.md                  ← 新增：xospec 目錄說明
 │   └── specs/
 │       └── <capability>/spec.md   ← 新增：每個確認的 capability 一份基準 spec
 ```
@@ -107,7 +107,7 @@ Agent 收到導入請求後，**嚴格按以下順序執行**：
 ```
 📦 選擇要導入的層級：
 
-[必選] Layer 1-2: openspec 基本結構 + Living Specs
+[必選] Layer 1-2: xospec 基本結構 + Living Specs
 [ ] Layer 5a: docs/engineering-principles.md（工程原則）
 [ ] Layer 5b: docs/superpowers.md + .planning/（GSD 整合）
 
@@ -138,25 +138,25 @@ Agent 收到導入請求後，**嚴格按以下順序執行**：
 - 後續 Change 的 spec_delta 將持續豐富此文件
 ```
 
-#### 3d. .openspec-map.md
+#### 3d. .xospec-map.md
 
 根據 Step 1 掃描結果和 Step 2 確認的 capabilities，生成完整地圖：
 
 ```markdown
-# OpenSpec Project Map
+# x.ospec Project Map
 
 ## Directory Tree & Annotations
 - src/auth/            # [Capability: auth]
 - src/billing/         # [Capability: billing]
-- openspec/
+- xospec/
   - specs/             # Layer 2: Living Specs
   - changes/           # Layer 3: Change Packages（尚無）
 
 ## Capability Registry
 | Capability | Spec Path | Source | Status |
 |------------|-----------|--------|--------|
-| auth | openspec/specs/auth/spec.md | src/auth/ | Baseline |
-| billing | openspec/specs/billing/spec.md | src/billing/ | Baseline |
+| auth | xospec/specs/auth/spec.md | src/auth/ | Baseline |
+| billing | xospec/specs/billing/spec.md | src/billing/ | Baseline |
 
 ## Active Changes
 （尚無進行中的 Change）
@@ -181,14 +181,14 @@ Agent 收到導入請求後，**嚴格按以下順序執行**：
 若使用者有工作要做，建立：
 
 ```
-openspec/changes/<change-id>/
+xospec/changes/<change-id>/
 ├── proposal.md      ← 根據使用者描述填入 Why/Who/What
 ├── design.md        ← 留空模板，等使用者或 Agent 填寫
 ├── tasks.md         ← 留空模板
 └── spec_delta.md    ← 留空模板
 ```
 
-同時更新 `.openspec-map.md` 的 Active Changes 區塊。
+同時更新 `.xospec-map.md` 的 Active Changes 區塊。
 
 若啟用了 GSD（Layer 5b），同時更新：
 - `.planning/STATE.md` — 設定 active phase
@@ -200,33 +200,33 @@ openspec/changes/<change-id>/
 
 ```
 行動：
-1. git add openspec/ .openspec-map.md AGENTS.md docs/ .planning/ (若有)
-2. git commit -m "chore: bootstrap OpenSpec framework (brownfield onboard)"
+1. git add xospec/ .xospec-map.md AGENTS.md docs/ .planning/ (若有)
+2. git commit -m "chore: bootstrap x.ospec framework (brownfield onboard)"
 3. 向使用者確認：
 
-✅ OpenSpec 導入完成！
+✅ x.ospec 導入完成！
 
 新增的檔案：
-  - .openspec-map.md
+  - .xospec-map.md
   - AGENTS.md
-  - openspec/README.md
-  - openspec/specs/auth/spec.md
-  - openspec/specs/billing/spec.md
+  - xospec/README.md
+  - xospec/specs/auth/spec.md
+  - xospec/specs/billing/spec.md
   (+ Change Package 如果有建立)
 
 未修改任何既有檔案。
 
 下一步：
-  - 修改程式碼前，先更新 openspec/changes/<id>/tasks.md
+  - 修改程式碼前，先更新 xospec/changes/<id>/tasks.md
   - 完成後，用 spec_delta.md 記錄行為變更
-  - openspec-preflight hook 會自動提醒你遵守流程
+  - xospec-preflight hook 會自動提醒你遵守流程
 ```
 
 ---
 
 ## Agent 行為約束
 
-1. **絕不修改既有程式碼** — 只新增 OpenSpec 框架的 Markdown 檔案
+1. **絕不修改既有程式碼** — 只新增 x.ospec 框架的 Markdown 檔案
 2. **絕不覆蓋既有檔案** — 若 AGENTS.md 已存在，詢問是否合併而非覆蓋
 3. **每一步都要確認** — 不要假設 capabilities，讓使用者確認
 4. **最小範圍** — 只為使用者確認的 capabilities 建立 spec，不要預先建立整個系統的 spec
@@ -236,8 +236,8 @@ openspec/changes/<change-id>/
 
 | Skill | 協作方式 |
 |-------|---------|
-| `openspec-generator` | Brownfield 不使用 generator 的 TUI/CLI，由本 Skill 的認知流程直接生成 |
-| `openspec-preflight` | 導入完成後，preflight hook 自動啟動監督 |
+| `xospec-generator` | Brownfield 不使用 generator 的 TUI/CLI，由本 Skill 的認知流程直接生成 |
+| `xospec-preflight` | 導入完成後，preflight hook 自動啟動監督 |
 | `superpowers:brainstorming` | Step 2 推斷 capabilities 時可用來探索方案 |
 | `superpowers:writing-plans` | Step 4 建立 Change Package 時可用來填寫 design.md |
 | GSD (`gsd:new-project`) | 若使用者選擇 Layer 5b，可用 GSD 初始化 .planning/ |
@@ -246,7 +246,7 @@ openspec/changes/<change-id>/
 
 ```bash
 # 方法 1: 用 Skill 互動式導入（推薦）
-# 在專案目錄中對 Agent 說：「幫我導入 OpenSpec」
+# 在專案目錄中對 Agent 說：「幫我導入 x.ospec」
 
 # 方法 2: 用 generator CLI 快速建立骨架（不含互動推斷）
 python create_repo.py \

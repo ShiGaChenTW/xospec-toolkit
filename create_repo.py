@@ -1,4 +1,4 @@
-"""OpenSpec Toolkit — Jinja2 templates, CLI mode, git init, full workflow."""
+"""x.ospec Toolkit — Jinja2 templates, CLI mode, git init, full workflow."""
 
 from pathlib import Path
 import argparse
@@ -16,7 +16,7 @@ from jinja2 import Environment, FileSystemLoader
 # ── Constants ────────────────────────────────────────────────────────────────
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
-CONFIG_FILE = ".openspec-generator.yml"
+CONFIG_FILE = ".xospec-generator.yml"
 
 MIN_SCREEN_WIDTH = 110
 FORM_TOP_ROW = 5
@@ -135,7 +135,7 @@ def normalize_answers(values: dict[str, str]) -> dict[str, str]:
 # ── Config file ──────────────────────────────────────────────────────────────
 
 def load_config() -> dict | None:
-    """Load defaults from .openspec-generator.yml if it exists."""
+    """Load defaults from .xospec-generator.yml if it exists."""
     config_path = Path.cwd() / CONFIG_FILE
     if not config_path.exists():
         config_path = Path.home() / CONFIG_FILE
@@ -198,7 +198,7 @@ def draw_size_warning(stdscr: curses.window) -> None:
     height, width = stdscr.getmaxyx()
     stdscr.erase()
     stdscr.bkgd(" ", curses.color_pair(PAIR_INACTIVE_LABEL))
-    safe_addstr(stdscr, 2, 2, "OpenSpec Toolkit / Fullscreen", curses.color_pair(PAIR_TITLE) | curses.A_BOLD)
+    safe_addstr(stdscr, 2, 2, "x.ospec Toolkit / Fullscreen", curses.color_pair(PAIR_TITLE) | curses.A_BOLD)
     safe_hline(stdscr, 3, 2, ord("="), max(10, width - 4), curses.color_pair(PAIR_CURSOR_LINE))
     safe_addstr(stdscr, 6, 2, "畫面尺寸不足，請先放大 terminal 視窗。", curses.color_pair(PAIR_STATUS_WARN) | curses.A_BOLD)
     safe_addstr(stdscr, 8, 2, f"需要至少: {MIN_SCREEN_WIDTH} x {MIN_SCREEN_HEIGHT}", curses.color_pair(PAIR_ACTIVE_LABEL))
@@ -218,7 +218,7 @@ def draw_form(stdscr: curses.window, current_index: int, values: dict[str, str],
     content_width = max(20, width - (content_x * 2))
     input_inner_width = max(18, content_width - 4)
 
-    title = "OpenSpec Toolkit / Fullscreen"
+    title = "x.ospec Toolkit / Fullscreen"
     subtitle = "Enter 逐題跳到下一題，方向鍵可移動，F2 送出，Esc 離開"
     safe_addstr(stdscr, 1, 2, title[: width - 4], curses.color_pair(PAIR_TITLE) | curses.A_BOLD)
     safe_addstr(stdscr, 2, 2, subtitle[: width - 4], curses.color_pair(PAIR_SUBTITLE) | curses.A_BOLD)
@@ -354,16 +354,16 @@ def write_file(path: Path, content: str, overwrite: bool) -> None:
 
 def add_change(target_dir: str, change_name: str, capability: str | None,
                feature_why: str | None) -> Path:
-    """Add a new Change Package to an existing OpenSpec repo."""
+    """Add a new Change Package to an existing x.ospec repo."""
     env = Environment(
         loader=FileSystemLoader(str(TEMPLATES_DIR)),
         keep_trailing_newline=True,
     )
     repo_root = Path(target_dir).expanduser()
-    openspec_dir = repo_root / "openspec"
+    xospec_dir = repo_root / "xospec"
 
-    if not openspec_dir.exists():
-        print(f"錯誤：{openspec_dir} 不存在。請先導入 OpenSpec 框架（--brownfield）或建立新專案。")
+    if not xospec_dir.exists():
+        print(f"錯誤：{xospec_dir} 不存在。請先導入 x.ospec 框架（--brownfield）或建立新專案。")
         sys.exit(1)
 
     change_id = slugify(change_name)
@@ -373,7 +373,7 @@ def add_change(target_dir: str, change_name: str, capability: str | None,
         capability = parts[1] if len(parts) > 1 else parts[0]
     capability = slugify(capability)
 
-    changes_dir = openspec_dir / "changes" / change_id
+    changes_dir = xospec_dir / "changes" / change_id
 
     if changes_dir.exists():
         print(f"錯誤：{changes_dir} 已存在。")
@@ -399,12 +399,12 @@ def add_change(target_dir: str, change_name: str, capability: str | None,
     write_file(changes_dir / "spec_delta.md", env.get_template("spec_delta.md.j2").render(ctx), False)
 
     # Ensure capability spec exists
-    cap_spec = openspec_dir / "specs" / capability / "spec.md"
+    cap_spec = xospec_dir / "specs" / capability / "spec.md"
     if not cap_spec.exists():
         write_file(cap_spec, env.get_template("spec.md.j2").render(capability=capability, **ctx), False)
 
-    # Update .openspec-map.md if it exists
-    map_path = repo_root / ".openspec-map.md"
+    # Update .xospec-map.md if it exists
+    map_path = repo_root / ".xospec-map.md"
     if map_path.exists():
         map_content = map_path.read_text(encoding="utf-8")
         if change_id not in map_content:
@@ -471,8 +471,8 @@ def generate_repo(answers: dict[str, str], brownfield: bool = False) -> Path:
     }
 
     repo_root = target_dir
-    openspec_dir = repo_root / "openspec"
-    changes_dir = openspec_dir / "changes" / change_id
+    xospec_dir = repo_root / "xospec"
+    changes_dir = xospec_dir / "changes" / change_id
 
     mode_label = "Brownfield 導入" if brownfield else "生成 repo"
     print(f"\n{mode_label}: {repo_root}\n")
@@ -481,12 +481,12 @@ def generate_repo(answers: dict[str, str], brownfield: bool = False) -> Path:
     if not brownfield:
         write_file(repo_root / "README.md", env.get_template("readme.md.j2").render(ctx), overwrite)
         write_file(repo_root / ".gitignore", env.get_template("gitignore.j2").render(ctx), overwrite)
-    write_file(openspec_dir / "README.md", env.get_template("openspec_readme.md.j2").render(ctx), overwrite)
+    write_file(xospec_dir / "README.md", env.get_template("xospec_readme.md.j2").render(ctx), overwrite)
 
     # Capability specs
     for cap in capabilities:
         write_file(
-            openspec_dir / "specs" / cap / "spec.md",
+            xospec_dir / "specs" / cap / "spec.md",
             env.get_template("spec.md.j2").render(capability=cap, **ctx),
             overwrite,
         )
@@ -504,8 +504,8 @@ def generate_repo(answers: dict[str, str], brownfield: bool = False) -> Path:
     # AGENTS.md (#4)
     write_file(repo_root / "AGENTS.md", env.get_template("agents.md.j2").render(ctx), overwrite)
 
-    # .openspec-map.md — 空間索引
-    write_file(repo_root / ".openspec-map.md", env.get_template("openspec_map.md.j2").render(ctx), overwrite)
+    # .xospec-map.md — 空間索引
+    write_file(repo_root / ".xospec-map.md", env.get_template("xospec_map.md.j2").render(ctx), overwrite)
 
     # engineering-principles.md (#5)
     write_file(
@@ -544,14 +544,14 @@ def generate_repo(answers: dict[str, str], brownfield: bool = False) -> Path:
     if do_git_init:
         if brownfield:
             # Brownfield: repo already has git, just commit the new files
-            print("\n提交 OpenSpec 框架檔案...")
-            subprocess.run(["git", "add", "openspec/", ".openspec-map.md", "AGENTS.md",
+            print("\n提交 x.ospec 框架檔案...")
+            subprocess.run(["git", "add", "xospec/", ".xospec-map.md", "AGENTS.md",
                             "docs/"], cwd=str(repo_root), check=True, capture_output=True)
             if enable_superpowers:
                 subprocess.run(["git", "add", ".planning/"], cwd=str(repo_root),
                                check=True, capture_output=True)
             result = subprocess.run(
-                ["git", "commit", "-m", "chore: bootstrap OpenSpec framework (brownfield onboard)"],
+                ["git", "commit", "-m", "chore: bootstrap x.ospec framework (brownfield onboard)"],
                 cwd=str(repo_root), capture_output=True, text=True,
             )
             if result.returncode == 0:
@@ -565,7 +565,7 @@ def generate_repo(answers: dict[str, str], brownfield: bool = False) -> Path:
             subprocess.run(["git", "init"], cwd=str(repo_root), check=True, capture_output=True)
             subprocess.run(["git", "add", "."], cwd=str(repo_root), check=True, capture_output=True)
             result = subprocess.run(
-                ["git", "commit", "-m", "chore: bootstrap OpenSpec repo structure"],
+                ["git", "commit", "-m", "chore: bootstrap x.ospec repo structure"],
                 cwd=str(repo_root), capture_output=True, text=True,
             )
             if result.returncode == 0:
@@ -585,7 +585,7 @@ def generate_repo(answers: dict[str, str], brownfield: bool = False) -> Path:
 
 def parse_cli_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="OpenSpec Toolkit — 互動式或 CLI 模式建立 repo 骨架",
+        description="x.ospec Toolkit — 互動式或 CLI 模式建立 repo 骨架",
     )
     parser.add_argument("--project-name", help="專案名稱")
     parser.add_argument("--target-dir", help="輸出路徑")
@@ -600,9 +600,9 @@ def parse_cli_args() -> argparse.Namespace:
     parser.add_argument("--git-init", choices=["yes", "no"], default="yes")
     parser.add_argument("--non-interactive", action="store_true", help="跳過 TUI，直接用 CLI 參數生成")
     parser.add_argument("--brownfield", action="store_true",
-                        help="Brownfield 模式：不生成 README/.gitignore，只建立 openspec 框架檔案")
+                        help="Brownfield 模式：不生成 README/.gitignore，只建立 xospec 框架檔案")
     parser.add_argument("--add-change", metavar="CHANGE_NAME",
-                        help="在既有 openspec repo 中新增一個 Change Package")
+                        help="在既有 xospec repo 中新增一個 Change Package")
     return parser.parse_args()
 
 

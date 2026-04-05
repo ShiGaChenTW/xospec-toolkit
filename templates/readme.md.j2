@@ -1,6 +1,6 @@
 # {{ project_name }}
 
-This repository uses the **OpenSpec + Superpowers + GSD** integrated architecture.
+This repository uses the **x.ospec + Superpowers + GSD** integrated architecture.
 
 ## Purpose
 
@@ -12,7 +12,7 @@ This repository uses the **OpenSpec + Superpowers + GSD** integrated architectur
 
 ```
 Layer 5  Superpowers + GSD  --> Engineering discipline + execution orchestration
-Layer 4  OpenSpec CLI        --> Spec automation (optional)
+Layer 4  x.ospec CLI        --> Spec automation (optional)
 Layer 3  changes/            --> Change packages (proposal/design/tasks)
 Layer 2  specs/              --> Long-lived living specs
 Layer 1  repo + git          --> Foundation
@@ -27,7 +27,7 @@ Layer 1  repo + git          --> Foundation
 ├── docs/
 │   ├── engineering-principles.md     <-- Definition of Done & standards
 │   └── superpowers.md                <-- Superpowers + GSD guide
-├── openspec/
+├── xospec/
 │   ├── specs/                        <-- Living specs by capability
 │   └── changes/                      <-- Change packages
 └── .planning/
@@ -39,7 +39,7 @@ Layer 1  repo + git          --> Foundation
 ## Workflow
 
 1. Check `.planning/ROADMAP.md` for current phase
-2. Read `openspec/changes/<change-id>/proposal.md`
+2. Read `xospec/changes/<change-id>/proposal.md`
 3. Draft `design.md` and `tasks.md`
 4. Implement one task at a time (TDD)
 5. Update specs after behavior changes

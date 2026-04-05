@@ -1,4 +1,4 @@
-# OpenSpec Project Map
+# x.ospec Project Map
 
 ## Directory Tree & Annotations
 
@@ -7,11 +7,11 @@
 ├── README.md
 ├── AGENTS.md
 ├── .gitignore
-├── .openspec-map.md          # 本檔案 — 空間索引
+├── .xospec-map.md          # 本檔案 — 空間索引
 ├── docs/
 │   ├── engineering-principles.md
 {% if enable_superpowers %}│   └── superpowers.md
-{% endif %}├── openspec/
+{% endif %}├── xospec/
 │   ├── README.md
 │   ├── specs/
 {% for cap in capabilities %}│   │   └── {{ cap }}/spec.md    # [Capability: {{ cap }}]
@@ -31,7 +31,7 @@
 
 | Capability | Spec Path | Status |
 |------------|-----------|--------|
-{% for cap in capabilities %}| {{ cap }} | `openspec/specs/{{ cap }}/spec.md` | Active |
+{% for cap in capabilities %}| {{ cap }} | `xospec/specs/{{ cap }}/spec.md` | Active |
 {% endfor %}
 
 ## Active Changes

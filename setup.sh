@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# OpenSpec Toolkit — Setup & Launcher
+# x.ospec Toolkit — Setup & Launcher
 #
 # 一鍵完成：環境檢查 → 安裝依賴 → 安裝 Skills & Hook → 啟動 Generator
 # =============================================================================
@@ -33,7 +33,7 @@ header(){ printf "\n${BOLD}── %s ──${NC}\n\n" "$1"; }
 
 usage() {
   cat <<EOF
-${BOLD}OpenSpec Toolkit Setup${NC}
+${BOLD}x.ospec Toolkit Setup${NC}
 
 用法: ./setup.sh [選項]
 
@@ -48,23 +48,23 @@ ${BOLD}使用情境:${NC}
 
   ${CYAN}1. 全新專案（Greenfield）${NC}
      ./setup.sh
-     → 啟動 TUI，填寫資訊後生成新的 OpenSpec repo
+     → 啟動 TUI，填寫資訊後生成新的 x.ospec repo
 
   ${CYAN}2. 既有專案導入（Brownfield）${NC}
      cd /path/to/your-existing-project
-     /path/to/openspec-toolkit/setup.sh --brownfield
-     → 在當前目錄注入 OpenSpec 框架，不動既有程式碼
+     /path/to/xospec-toolkit/setup.sh --brownfield
+     → 在當前目錄注入 x.ospec 框架，不動既有程式碼
 
   ${CYAN}3. Fork 下來的專案${NC}
      git clone https://github.com/someone/some-project.git
      cd some-project
-     /path/to/openspec-toolkit/setup.sh --brownfield
-     → 對 fork 專案導入 OpenSpec 框架
+     /path/to/xospec-toolkit/setup.sh --brownfield
+     → 對 fork 專案導入 x.ospec 框架
 
   ${CYAN}4. 追加 Change Package${NC}
-     cd /path/to/your-openspec-project
-     /path/to/openspec-toolkit/setup.sh --add-change "add-billing-export"
-     → 在既有 OpenSpec 專案中新增一個 Change Package
+     cd /path/to/your-xospec-project
+     /path/to/xospec-toolkit/setup.sh --add-change "add-billing-export"
+     → 在既有 x.ospec 專案中新增一個 Change Package
 
   ${CYAN}5. CI/CD 自動化${NC}
      ./setup.sh --non-interactive --project-name "my-app" --capabilities "auth,billing"
@@ -159,7 +159,7 @@ install_skills() {
 
   mkdir -p "$SKILLS_DIR"
 
-  local skills=("openspec-generator" "openspec-preflight" "openspec-brownfield-onboard")
+  local skills=("xospec-generator" "xospec-preflight" "xospec-brownfield-onboard")
 
   for skill in "${skills[@]}"; do
     local src="$SCRIPT_DIR/skills/$skill"
@@ -193,29 +193,29 @@ install_hook() {
 
   mkdir -p "$HOOKS_DIR"
 
-  local hook_src="$SCRIPT_DIR/skills/openspec-preflight/openspec-preflight.js"
-  local hook_dst="$HOOKS_DIR/openspec-preflight.js"
+  local hook_src="$SCRIPT_DIR/skills/xospec-preflight/xospec-preflight.js"
+  local hook_dst="$HOOKS_DIR/xospec-preflight.js"
 
   # 複製 hook 腳本
   if [ -f "$hook_dst" ] && cmp -s "$hook_src" "$hook_dst" 2>/dev/null; then
-    ok "openspec-preflight.js（已是最新）"
+    ok "xospec-preflight.js（已是最新）"
   else
     cp "$hook_src" "$hook_dst"
-    ok "openspec-preflight.js → 已複製到 hooks/"
+    ok "xospec-preflight.js → 已複製到 hooks/"
   fi
 
   # 檢查 settings.json 是否已設定
-  if [ -f "$SETTINGS_FILE" ] && grep -q "openspec-preflight" "$SETTINGS_FILE" 2>/dev/null; then
+  if [ -f "$SETTINGS_FILE" ] && grep -q "xospec-preflight" "$SETTINGS_FILE" 2>/dev/null; then
     ok "settings.json 已包含 preflight hook 設定"
   else
-    warn "請手動將 preflight hook 加入 ~/.claude/settings.json（參考 skills/openspec-preflight/SKILL.md）"
+    warn "請手動將 preflight hook 加入 ~/.claude/settings.json（參考 skills/xospec-preflight/SKILL.md）"
   fi
 }
 
 # ── 狀態檢查 ──────────────────────────────────────────────────────────────────
 
 show_status() {
-  header "OpenSpec Toolkit 安裝狀態"
+  header "x.ospec Toolkit 安裝狀態"
 
   # Python
   if command -v python3 &>/dev/null; then
@@ -229,7 +229,7 @@ show_status() {
   python3 -c "import yaml"   2>/dev/null && ok "pyyaml" || warn "pyyaml 未安裝"
 
   # Skills
-  local skills=("openspec-generator" "openspec-preflight" "openspec-brownfield-onboard")
+  local skills=("xospec-generator" "xospec-preflight" "xospec-brownfield-onboard")
   for skill in "${skills[@]}"; do
     if [ -L "$SKILLS_DIR/$skill" ]; then
       ok "Skill: $skill → $(readlink "$SKILLS_DIR/$skill")"
@@ -239,13 +239,13 @@ show_status() {
   done
 
   # Hook
-  if [ -f "$HOOKS_DIR/openspec-preflight.js" ]; then
-    ok "Hook: openspec-preflight.js"
+  if [ -f "$HOOKS_DIR/xospec-preflight.js" ]; then
+    ok "Hook: xospec-preflight.js"
   else
-    warn "Hook: openspec-preflight.js 未安裝"
+    warn "Hook: xospec-preflight.js 未安裝"
   fi
 
-  if [ -f "$SETTINGS_FILE" ] && grep -q "openspec-preflight" "$SETTINGS_FILE" 2>/dev/null; then
+  if [ -f "$SETTINGS_FILE" ] && grep -q "xospec-preflight" "$SETTINGS_FILE" 2>/dev/null; then
     ok "Hook: settings.json 已設定"
   else
     warn "Hook: settings.json 尚未設定"
@@ -257,9 +257,9 @@ show_status() {
 # ── 移除 ──────────────────────────────────────────────────────────────────────
 
 uninstall() {
-  header "移除 OpenSpec Toolkit"
+  header "移除 x.ospec Toolkit"
 
-  local skills=("openspec-generator" "openspec-preflight" "openspec-brownfield-onboard")
+  local skills=("xospec-generator" "xospec-preflight" "xospec-brownfield-onboard")
   for skill in "${skills[@]}"; do
     local dst="$SKILLS_DIR/$skill"
     if [ -L "$dst" ]; then
@@ -268,9 +268,9 @@ uninstall() {
     fi
   done
 
-  if [ -f "$HOOKS_DIR/openspec-preflight.js" ]; then
-    rm "$HOOKS_DIR/openspec-preflight.js"
-    ok "移除 Hook: openspec-preflight.js"
+  if [ -f "$HOOKS_DIR/xospec-preflight.js" ]; then
+    rm "$HOOKS_DIR/xospec-preflight.js"
+    ok "移除 Hook: xospec-preflight.js"
   fi
 
   warn "settings.json 中的 hook 設定請手動移除"
@@ -283,7 +283,7 @@ uninstall() {
 
 run_generator() {
   activate_venv
-  printf "\n${BOLD}${GREEN}🚀 啟動 OpenSpec Generator${NC}\n\n"
+  printf "\n${BOLD}${GREEN}🚀 啟動 x.ospec Generator${NC}\n\n"
   exec python3 "$SCRIPT_DIR/create_repo.py" "$@"
 }
 
@@ -322,7 +322,7 @@ main() {
       show_status
       ;;
     --brownfield)
-      # Brownfield: 在當前目錄（pwd）注入 OpenSpec 框架
+      # Brownfield: 在當前目錄（pwd）注入 x.ospec 框架
       check_env
       install_deps
       install_skills
@@ -330,14 +330,14 @@ main() {
       shift
       local proj_name
       proj_name=$(basename "$(pwd)")
-      info "Brownfield 模式：在 $(pwd) 導入 OpenSpec 框架"
+      info "Brownfield 模式：在 $(pwd) 導入 x.ospec 框架"
       run_generator --non-interactive --brownfield \
         --project-name "$proj_name" \
         --target-dir "$(pwd)" \
         "$@"
       ;;
     --add-change)
-      # 追加 Change Package 到當前目錄的 OpenSpec 專案
+      # 追加 Change Package 到當前目錄的 x.ospec 專案
       check_env
       install_deps
       shift

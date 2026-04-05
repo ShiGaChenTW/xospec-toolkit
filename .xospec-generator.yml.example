@@ -1,5 +1,5 @@
-# OpenSpec Generator 預設值
-# 放在專案目錄或 $HOME 下，檔名為 .openspec-generator.yml
+# x.ospec Generator 預設值
+# 放在專案目錄或 $HOME 下，檔名為 .xospec-generator.yml
 # 這些值會在 TUI 中預填，可在表單中覆寫
 
 project_name: my-project

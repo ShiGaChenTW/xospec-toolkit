@@ -1,12 +1,12 @@
-# OpenSpec Toolkit
+# x.ospec Toolkit
 
 ## 專案簡介
 
-互動式 TUI + CLI 工具，一鍵建立符合 OpenSpec 規範的 repo 骨架。
+互動式 TUI + CLI 工具，一鍵建立符合 x.ospec 規範的 repo 骨架。
 
 - 主程式：`create_repo.py`（單檔，Python 3.10+，依賴 Jinja2 + PyYAML）
 - 模板目錄：`templates/*.j2`（15 個 Jinja2 模板）
-- 架構：OpenSpec + Superpowers + GSD 三合一五層架構
+- 架構：x.ospec + Superpowers + GSD 三合一五層架構
 - 詳細架構說明：`docs/architecture-guide.md`
 - 版本記錄：`docs/CHANGELOG.md`
 
