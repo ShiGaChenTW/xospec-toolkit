@@ -2,6 +2,8 @@
 
 互動式 TUI + CLI 工具，一鍵建立符合 X.OSpec 規範的 repo 骨架。
 
+ HTML版説明：/docs/showcase/index.html
+
 ## 背景
 
 基於「GithubX.OSpec框架」＋Superpowers 研究結論，採用 **X.OSpec + Superpowers** 的「repo 檔案驅動、可跨工具搬移」workflow。本工具自動生成五層架構中的 Layer 1–3，不需先安裝 X.OSpec CLI 或 Superpowers。
