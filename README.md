@@ -17,7 +17,7 @@ Layer 1  repo + git       → 底座                                  [✓ 本�
 ## 快速開始
 
 ```bash
-git clone <repo-url> openspec-toolkit
+git clone https://github.com/ShiGaChenTW/openspec-toolkit openspec-toolkit
 ```
 
 根據你的情境，選擇對應的使用路徑：
