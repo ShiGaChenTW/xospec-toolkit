@@ -159,7 +159,7 @@ install_skills() {
 
   mkdir -p "$SKILLS_DIR"
 
-  local skills=("xospec-generator" "xospec-preflight" "xospec-brownfield-onboard")
+  local skills=("xospec-create" "xospec-generator" "xospec-preflight" "xospec-brownfield-onboard")
 
   for skill in "${skills[@]}"; do
     local src="$SCRIPT_DIR/skills/$skill"
@@ -229,7 +229,7 @@ show_status() {
   python3 -c "import yaml"   2>/dev/null && ok "pyyaml" || warn "pyyaml 未安裝"
 
   # Skills
-  local skills=("xospec-generator" "xospec-preflight" "xospec-brownfield-onboard")
+  local skills=("xospec-create" "xospec-generator" "xospec-preflight" "xospec-brownfield-onboard")
   for skill in "${skills[@]}"; do
     if [ -L "$SKILLS_DIR/$skill" ]; then
       ok "Skill: $skill → $(readlink "$SKILLS_DIR/$skill")"
@@ -259,7 +259,7 @@ show_status() {
 uninstall() {
   header "移除 x.ospec Toolkit"
 
-  local skills=("xospec-generator" "xospec-preflight" "xospec-brownfield-onboard")
+  local skills=("xospec-create" "xospec-generator" "xospec-preflight" "xospec-brownfield-onboard")
   for skill in "${skills[@]}"; do
     local dst="$SKILLS_DIR/$skill"
     if [ -L "$dst" ]; then

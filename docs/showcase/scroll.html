@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>X.OSpec Toolkit — 操作建議手冊</title>
+<title>X.OSpec Toolkit — 操作建議手冊（捲動版）</title>
 <style>
 /* ===== Theme Tokens ===== */
 :root {
@@ -61,53 +61,30 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.7;
-  overflow: hidden;
-  height: 100vh;
+  overflow-y: auto;
+  min-height: 100vh;
 }
 
 /* ===== Scene Container ===== */
 .showcase {
   position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 .scene {
-  position: absolute;
-  inset: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 2.5rem 4rem 4rem;
-  opacity: 0;
-  pointer-events: none;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  transition: opacity var(--transition-speed) var(--ease),
-              transform var(--transition-speed) var(--ease);
+  padding: 4rem 4rem 2rem;
+  opacity: 1;
+  pointer-events: all;
+  border-bottom: 1px solid var(--border);
 }
 /* Short-content scenes can center vertically */
-.scene.v-center { justify-content: center; }
-/* Inactive scenes sit below viewport by default */
-.scene:not(.active) {
-  transform: translateY(40px) scale(0.97);
-}
-.scene.active {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: all;
-}
-/* Exiting upward (when going forward) */
-.scene.exit-up {
-  opacity: 0;
-  transform: translateY(-40px) scale(0.97);
-}
-/* Exiting downward (when going backward) */
-.scene.exit-down {
-  opacity: 0;
-  transform: translateY(40px) scale(0.97);
-}
+.scene.v-center { min-height: 80vh; justify-content: center; }
+.scene:last-child { border-bottom: none; }
 
 /* ===== Scene Content ===== */
 .scene-inner {
@@ -370,57 +347,76 @@ code.ff-name {
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
 /* ===== Navigation ===== */
-.nav-bar {
+/* ===== Side TOC ===== */
+.side-toc {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.6rem 2rem;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
+  flex-direction: column;
+  gap: 8px;
   z-index: 100;
-  backdrop-filter: blur(12px);
 }
-.nav-dots {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.nav-dot {
+.toc-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--border);
   cursor: pointer;
   transition: background 0.3s, transform 0.3s;
+  position: relative;
 }
-.nav-dot.active {
+.toc-dot.active {
   background: var(--accent);
-  transform: scale(1.4);
+  transform: scale(1.5);
 }
-.nav-dot:hover { background: var(--accent2); }
-.nav-info {
-  font-size: 0.8rem;
+.toc-dot:hover { background: var(--accent2); transform: scale(1.3); }
+.toc-dot::before {
+  content: attr(data-label);
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 0.7rem;
   color: var(--text-dim);
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-.nav-btn {
-  background: none;
+  background: var(--bg-card);
+  padding: 0.2em 0.6em;
+  border-radius: 4px;
   border: 1px solid var(--border);
-  color: var(--text);
-  padding: 0.3rem 0.9rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: border-color 0.25s, background 0.25s;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
 }
-.nav-btn:hover { border-color: var(--accent); background: var(--highlight); }
-.nav-btn:disabled { opacity: 0.3; cursor: default; }
+.toc-dot:hover::before { opacity: 1; }
+
+/* ===== Back to Top ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s, background 0.3s;
+}
+.back-to-top.visible { opacity: 1; }
+.back-to-top:hover { background: var(--highlight); }
+
+@media (max-width: 768px) {
+  .side-toc { display: none; }
+}
 
 /* ===== Theme Switcher ===== */
 .theme-switcher {
@@ -450,20 +446,20 @@ code.ff-name {
   opacity: 0;
   transform: translateY(20px);
 }
-.scene.active .stagger > * {
+.scene.in-view .stagger > * {
   animation: fadeUp 0.5s var(--ease) forwards;
 }
-.scene.active .stagger > *:nth-child(1) { animation-delay: 0.05s; }
-.scene.active .stagger > *:nth-child(2) { animation-delay: 0.12s; }
-.scene.active .stagger > *:nth-child(3) { animation-delay: 0.19s; }
-.scene.active .stagger > *:nth-child(4) { animation-delay: 0.26s; }
-.scene.active .stagger > *:nth-child(5) { animation-delay: 0.33s; }
-.scene.active .stagger > *:nth-child(6) { animation-delay: 0.40s; }
-.scene.active .stagger > *:nth-child(7) { animation-delay: 0.47s; }
-.scene.active .stagger > *:nth-child(8) { animation-delay: 0.54s; }
-.scene.active .stagger > *:nth-child(9) { animation-delay: 0.61s; }
-.scene.active .stagger > *:nth-child(10){ animation-delay: 0.68s; }
-.scene.active .stagger > *:nth-child(11){ animation-delay: 0.75s; }
+.scene.in-view .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.scene.in-view .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+.scene.in-view .stagger > *:nth-child(3) { animation-delay: 0.19s; }
+.scene.in-view .stagger > *:nth-child(4) { animation-delay: 0.26s; }
+.scene.in-view .stagger > *:nth-child(5) { animation-delay: 0.33s; }
+.scene.in-view .stagger > *:nth-child(6) { animation-delay: 0.40s; }
+.scene.in-view .stagger > *:nth-child(7) { animation-delay: 0.47s; }
+.scene.in-view .stagger > *:nth-child(8) { animation-delay: 0.54s; }
+.scene.in-view .stagger > *:nth-child(9) { animation-delay: 0.61s; }
+.scene.in-view .stagger > *:nth-child(10){ animation-delay: 0.68s; }
+.scene.in-view .stagger > *:nth-child(11){ animation-delay: 0.75s; }
 
 @keyframes fadeUp {
   to { opacity: 1; transform: translateY(0); }
@@ -476,12 +472,13 @@ code.ff-name {
   background: var(--gradient-hero);
   z-index: -1;
 }
+.scene.v-center { position: relative; }
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .scene { padding: 2rem 1.5rem; }
+  .scene { padding: 2.5rem 1.5rem 2rem; }
   .card-grid { grid-template-columns: 1fr; }
-  .nav-bar { padding: 0.5rem 1rem; }
+  .side-toc { display: none; }
   .layer-row .layer-desc { display: none; }
 }
 
@@ -523,7 +520,7 @@ code.ff-name {
 <div class="showcase">
 
 <!-- ===== Scene 1: Cover ===== -->
-<div class="scene active v-center" data-scene="0">
+<div class="scene v-center" id="scene-0" data-scene="0">
   <div class="hero-bg"></div>
   <div class="scene-inner stagger">
     <div class="scene-tag">Operation Guide</div>
@@ -535,13 +532,13 @@ code.ff-name {
       <span class="badge purple">跨工具可攜</span>
     </p>
     <p style="color:var(--text-dim); font-size:0.85rem; margin-top:2rem">
-      按 <kbd style="background:var(--bg-card);padding:0.15em 0.5em;border-radius:4px;border:1px solid var(--border)">→</kbd> 或點擊下方圓點切換頁面 &nbsp;|&nbsp; 共 13 頁
+      往下捲動瀏覽完整手冊 &nbsp;|&nbsp; 共 13 節 &nbsp;|&nbsp; 右側圓點可快速跳轉
     </p>
   </div>
 </div>
 
 <!-- ===== Scene 2: 設計背景 ===== -->
-<div class="scene" data-scene="1">
+<div class="scene" data-scene="1" id="scene-1">
   <div class="scene-inner stagger">
     <div class="scene-tag">Why This Architecture</div>
     <h2>設計背景：AI Coding 的五個核心問題</h2>
@@ -609,7 +606,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 3: 五層架構 ===== -->
-<div class="scene" data-scene="2">
+<div class="scene" data-scene="2" id="scene-2">
   <div class="scene-inner stagger">
     <div class="scene-tag">Five Layers</div>
     <h2>五層架構：從底座到紀律</h2>
@@ -648,7 +645,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 4: 五大情境 ===== -->
-<div class="scene" data-scene="3">
+<div class="scene" data-scene="3" id="scene-3">
   <div class="scene-inner stagger">
     <div class="scene-tag">Use Cases</div>
     <h2>五大操作情境</h2>
@@ -684,7 +681,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 5: 快速開始 ===== -->
-<div class="scene" data-scene="4">
+<div class="scene" data-scene="4" id="scene-4">
   <div class="scene-inner stagger">
     <div class="scene-tag">Quick Start</div>
     <h2>三步驟快速開始</h2>
@@ -710,7 +707,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 6: setup.sh 指令速查 ===== -->
-<div class="scene" data-scene="5">
+<div class="scene" data-scene="5" id="scene-5">
   <div class="scene-inner stagger">
     <div class="scene-tag">Reference</div>
     <h2>setup.sh 指令速查表</h2>
@@ -734,7 +731,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 7: TUI 操作指引 ===== -->
-<div class="scene" data-scene="6">
+<div class="scene" data-scene="6" id="scene-6">
   <div class="scene-inner stagger">
     <div class="scene-tag">TUI Guide</div>
     <h2>TUI 互動介面操作</h2>
@@ -833,7 +830,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 8: 生成的結構 ===== -->
-<div class="scene" data-scene="7">
+<div class="scene" data-scene="7" id="scene-7">
   <div class="scene-inner stagger">
     <div class="scene-tag">Output</div>
     <h2>生成的 Repo 結構</h2>
@@ -867,7 +864,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 9: 完整開發循環 ===== -->
-<div class="scene" data-scene="8">
+<div class="scene" data-scene="8" id="scene-8">
   <div class="scene-inner stagger">
     <div class="scene-tag">Workflow</div>
     <h2>完整開發循環（8 步驟）</h2>
@@ -979,7 +976,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 10: 閉環開發循環 ===== -->
-<div class="scene" data-scene="9">
+<div class="scene" data-scene="9" id="scene-9">
   <div class="scene-inner stagger">
     <div class="scene-tag">Closed Loop</div>
     <h2>閉環開發循環</h2>
@@ -1050,7 +1047,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 11: 四個隨附 Skills ===== -->
-<div class="scene" data-scene="10">
+<div class="scene" data-scene="10" id="scene-10">
   <div class="scene-inner stagger">
     <div class="scene-tag">Bundled Skills</div>
     <h2>隨附的 4 個 Claude Code Skills</h2>
@@ -1179,7 +1176,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 12: 日常操作建議 ===== -->
-<div class="scene" data-scene="11">
+<div class="scene" data-scene="11" id="scene-11">
   <div class="scene-inner stagger">
     <div class="scene-tag">Best Practices</div>
     <h2>日常操作建議</h2>
@@ -1222,7 +1219,7 @@ code.ff-name {
 </div>
 
 <!-- ===== Scene 13: CTA ===== -->
-<div class="scene v-center" data-scene="12">
+<div class="scene v-center" data-scene="12" id="scene-12">
   <div class="hero-bg"></div>
   <div class="scene-inner stagger" style="text-align:center">
     <div class="scene-tag">Get Started</div>
@@ -1259,86 +1256,70 @@ code.ff-name {
 
 </div><!-- .showcase -->
 
-<!-- Navigation Bar -->
-<nav class="nav-bar">
-  <button class="nav-btn" id="prevBtn" disabled>&larr; Prev</button>
-  <div class="nav-dots" id="navDots"></div>
-  <div class="nav-info">
-    <span id="pageNum">1 / 13</span>
-  </div>
-  <button class="nav-btn" id="nextBtn">Next &rarr;</button>
-</nav>
+<!-- Side TOC -->
+<div class="side-toc" id="sideToc">
+  <div class="toc-dot active" data-idx="0" data-label="Cover"></div>
+  <div class="toc-dot" data-idx="1" data-label="設計背景"></div>
+  <div class="toc-dot" data-idx="2" data-label="五層架構"></div>
+  <div class="toc-dot" data-idx="3" data-label="操作情境"></div>
+  <div class="toc-dot" data-idx="4" data-label="快速開始"></div>
+  <div class="toc-dot" data-idx="5" data-label="setup.sh"></div>
+  <div class="toc-dot" data-idx="6" data-label="TUI 操作"></div>
+  <div class="toc-dot" data-idx="7" data-label="Repo 結構"></div>
+  <div class="toc-dot" data-idx="8" data-label="開發循環"></div>
+  <div class="toc-dot" data-idx="9" data-label="閉環"></div>
+  <div class="toc-dot" data-idx="10" data-label="Skills"></div>
+  <div class="toc-dot" data-idx="11" data-label="操作建議"></div>
+  <div class="toc-dot" data-idx="12" data-label="CTA"></div>
+</div>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" title="回到頂部">↑</button>
 
 <script>
 (() => {
   const scenes = document.querySelectorAll('.scene');
-  const total = scenes.length;
-  let current = 0;
+  const dots = document.querySelectorAll('.toc-dot');
+  const backToTop = document.getElementById('backToTop');
 
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const pageNum = document.getElementById('pageNum');
-  const dotsWrap = document.getElementById('navDots');
+  // IntersectionObserver for scroll-triggered animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+      }
+    });
+  }, { threshold: 0.15 });
 
-  // Build dots
-  for (let i = 0; i < total; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
-    dot.addEventListener('click', () => goTo(i));
-    dotsWrap.appendChild(dot);
-  }
-  const dots = dotsWrap.querySelectorAll('.nav-dot');
+  scenes.forEach(scene => observer.observe(scene));
 
-  let animating = false;
+  // Active TOC dot tracking
+  const tocObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = entry.target.dataset.scene;
+        dots.forEach((d, i) => d.classList.toggle('active', i === parseInt(idx)));
+      }
+    });
+  }, { threshold: 0.3 });
 
-  function goTo(idx) {
-    if (idx < 0 || idx >= total || idx === current || animating) return;
-    animating = true;
+  scenes.forEach(scene => tocObserver.observe(scene));
 
-    const goingForward = idx > current;
-    const leaving = scenes[current];
-    const entering = scenes[idx];
-    const exitClass = goingForward ? 'exit-up' : 'exit-down';
+  // TOC dot click → scroll to section
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const idx = dot.dataset.idx;
+      const target = document.getElementById('scene-' + idx);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
 
-    // 1. Remove active from old scene & add exit animation
-    leaving.classList.remove('active');
-    leaving.classList.add(exitClass);
-
-    // 2. Prepare entering scene on the opposite side, then activate
-    //    For forward: new scene enters from below (default)
-    //    For backward: new scene enters from above
-    if (!goingForward) {
-      // Temporarily set entering scene above viewport
-      entering.style.transform = 'translateY(-40px) scale(0.97)';
-      // Force reflow so the browser registers the starting position
-      entering.offsetHeight;
-      entering.style.transform = '';
-    }
-    entering.classList.add('active');
-
-    // 3. Clean up exit class after transition ends
-    const prev = current;
-    setTimeout(() => {
-      scenes[prev].classList.remove(exitClass);
-      animating = false;
-    }, 550);
-
-    current = idx;
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
-    pageNum.textContent = `${current + 1} / ${total}`;
-    prevBtn.disabled = current === 0;
-    nextBtn.disabled = current === total - 1;
-  }
-
-  prevBtn.addEventListener('click', () => goTo(current - 1));
-  nextBtn.addEventListener('click', () => goTo(current + 1));
-
-  // Keyboard
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); goTo(current + 1); }
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1); }
-    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
-    if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+  // Back to top
+  window.addEventListener('scroll', () => {
+    backToTop.classList.toggle('visible', window.scrollY > 400);
+  });
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   // Theme switching

@@ -236,6 +236,7 @@ xospec/changes/<change-id>/
 
 | Skill | 協作方式 |
 |-------|---------|
+| `xospec-create` | Greenfield 互斥：本 Skill 用於既有專案導入，新專案請改用 `xospec-create` |
 | `xospec-generator` | Brownfield 不使用 generator 的 TUI/CLI，由本 Skill 的認知流程直接生成 |
 | `xospec-preflight` | 導入完成後，preflight hook 自動啟動監督 |
 | `superpowers:brainstorming` | Step 2 推斷 capabilities 時可用來探索方案 |

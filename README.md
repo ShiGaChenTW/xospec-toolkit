@@ -111,8 +111,8 @@ alias xospec="$XOSPEC_HOME/setup.sh"
 
 ```bash
 xospec                                       # 新專案
-xospec--brownfield                           # 導入既有專案
-xospec--add-change "add-billing-export"      # 追加 Change
+xospec --brownfield                           # 導入既有專案
+xospec --add-change "add-billing-export"      # 追加 Change
 ```
 
 ### setup.sh 選項一覽
@@ -134,7 +134,7 @@ xospec--add-change "add-billing-export"      # 追加 Change
 |------|------|------|
 | 1. 環境檢查 | 確認 Python 3.10+、Node.js、終端尺寸 | 必要 |
 | 2. Python 依賴 | 安裝 jinja2, pyyaml（若缺少） | 必要 |
-| 3. Claude Code Skills | 建立 3 個 skill 的 symlink 到 `~/.claude/skills/` | 有 Claude Code 時 |
+| 3. Claude Code Skills | 建立 4 個 skill 的 symlink 到 `~/.claude/skills/` | 有 Claude Code 時 |
 | 4. Preflight Hook | 複製 hook 腳本到 `~/.claude/hooks/` | 有 Node.js 時 |
 
 > 沒有 Claude Code 或 Node.js 也能正常使用 Generator，Skills 和 Hook 會自動跳過。
@@ -256,6 +256,7 @@ xospec-toolkit/
 ├── README.md                           ← 本檔案
 ├── .xospec-generator.yml.example     ← config 範例
 ├── skills/                             ← Claude Code Skills（隨專案發佈）
+│   ├── xospec-create/SKILL.md
 │   ├── xospec-generator/SKILL.md
 │   ├── xospec-preflight/
 │   │   ├── SKILL.md

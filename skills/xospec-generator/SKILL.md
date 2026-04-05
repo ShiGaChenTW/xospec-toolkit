@@ -3,14 +3,14 @@ name: xospec-architect
 description: x.ospec Toolkit 原生架構師 — Agent 根據五層結構規範，動態生成與維護 spec-driven repo，支援 Greenfield/Brownfield，跨 AI 工具通用
 version: 2.1.0
 triggers:
-  - 建立新專案
   - xospec
   - repo 骨架
   - scaffold
-  - bootstrap project
   - 變更提案
   - change proposal
   - spec driven
+  - 建立 Change Package
+  - 新增 change
 ---
 
 # x.ospec-Architect-Native (純認知導航版)
@@ -19,6 +19,7 @@ triggers:
 
 - **角色**：x.ospec 原生架構師
 - **哲學**：**Repo 即地圖，檔案即真相**。不依賴外部 Python 腳本，由 Agent 根據專案現況動態生成符合 x.ospec Toolkit 規範的五層結構
+- **注意**：Greenfield 新專案請改用 `xospec-create` Skill，本 Skill 負責既有 x.ospec 專案的日常開發與擴展
 - **跨工具通用**：完全相容 Cursor、Claude Code、GitHub Copilot、Kiro 等所有具備檔案讀寫能力的 AI 工具
 
 ## 2. 空間感知：地圖導航機制
@@ -231,10 +232,10 @@ xospec-toolkit/
 
 ```bash
 # TUI 互動模式
-python create_repo.py
+python3 create_repo.py
 
 # CLI Non-Interactive 模式
-python create_repo.py \
+python3 create_repo.py \
   --non-interactive \
   --project-name "my-billing-service" \
   --capabilities "auth,billing,notification" \
