@@ -556,7 +556,7 @@ bash tests/test_e2e.sh          # D 系列
 - teardown（清理臨時目錄）
 - 輸出 PASS/FAIL 和總計
 
-主程式路徑：/Users/scottchen/Documents/Coding-Project/openspec-toolkit/create_repo.py
-Hook 路徑：/Users/scottchen/.claude/hooks/openspec-preflight.js
-模板路徑：/Users/scottchen/Documents/Coding-Project/openspec-toolkit/templates/
+主程式路徑：./create_repo.py
+Hook 路徑：~/.claude/hooks/openspec-preflight.js
+模板路徑：./templates/
 ```

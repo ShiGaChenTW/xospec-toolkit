@@ -85,7 +85,7 @@ cp openspec-preflight.js ~/.claude/hooks/openspec-preflight.js
 ### 3. 建立 Skill symlink（選用）
 
 ```bash
-ln -sfn /Users/scottchen/Documents/Agent-Skills-Library/openspec-preflight ~/.claude/skills/openspec-preflight
+ln -sfn /path/to/openspec-toolkit/skills/openspec-preflight ~/.claude/skills/openspec-preflight
 ```
 
 ## 與其他 Skills 的協作
