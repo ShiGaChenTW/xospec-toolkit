@@ -646,7 +646,7 @@ def main() -> None:
             feature_why=args.feature_why,
         )
         print(f"\n全部完成！Change Package created at: {result}")
-        if not args.non_interactive:
+        if sys.stdin.isatty():
             post_generate_prompt(Path(target))
         return
 
@@ -681,7 +681,7 @@ def main() -> None:
     mode = "Brownfield 導入" if args.brownfield else "Repo created"
     print(f"\n全部完成！{mode} at: {repo_root}")
 
-    if not args.non_interactive:
+    if sys.stdin.isatty():
         post_generate_prompt(repo_root)
 
 
