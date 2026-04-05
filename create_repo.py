@@ -550,20 +550,33 @@ def generate_repo(answers: dict[str, str], brownfield: bool = False) -> Path:
             if enable_superpowers:
                 subprocess.run(["git", "add", ".planning/"], cwd=str(repo_root),
                                check=True, capture_output=True)
-            subprocess.run(
+            result = subprocess.run(
                 ["git", "commit", "-m", "chore: bootstrap OpenSpec framework (brownfield onboard)"],
-                cwd=str(repo_root), check=True, capture_output=True,
+                cwd=str(repo_root), capture_output=True, text=True,
             )
-            print("  git commit 完成")
+            if result.returncode == 0:
+                print("  git commit 完成")
+            else:
+                err = result.stderr.strip()
+                print(f"  ⚠ git commit 失敗：{err}")
+                print(f"  檔案已生成，請在 {repo_root} 手動 git commit")
         else:
             print("\n初始化 git repo...")
             subprocess.run(["git", "init"], cwd=str(repo_root), check=True, capture_output=True)
             subprocess.run(["git", "add", "."], cwd=str(repo_root), check=True, capture_output=True)
-            subprocess.run(
+            result = subprocess.run(
                 ["git", "commit", "-m", "chore: bootstrap OpenSpec repo structure"],
-                cwd=str(repo_root), check=True, capture_output=True,
+                cwd=str(repo_root), capture_output=True, text=True,
             )
-            print("  git init + initial commit 完成")
+            if result.returncode == 0:
+                print("  git init + initial commit 完成")
+            else:
+                err = result.stderr.strip()
+                print(f"  ⚠ git commit 失敗：{err}")
+                print("  可能原因：未設定 git user，請執行：")
+                print("    git config --global user.name \"Your Name\"")
+                print("    git config --global user.email \"you@example.com\"")
+                print(f"  然後在 {repo_root} 手動執行 git commit")
 
     return repo_root
 
